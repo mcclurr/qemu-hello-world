@@ -24,6 +24,7 @@ RUN dnf -y update && \
         wget \
         curl-minimal \
         python3 \
+        python3-pip \
     && dnf clean all
 
 WORKDIR /workspace
