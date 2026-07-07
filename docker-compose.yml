@@ -1,0 +1,13 @@
+services:
+  qemu:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    image: qemu-rhel-playground:latest
+    container_name: qemu-rhel-playground
+    command: sleep infinity
+    volumes:
+      - ./workspace:/workspace
+    working_dir: /workspace
+    stdin_open: true
+    tty: true
