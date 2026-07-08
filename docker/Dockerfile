@@ -9,14 +9,14 @@ name=Rocky Linux 9 AppStream
 baseurl=https://download.rockylinux.org/pub/rocky/9/AppStream/x86_64/os/
 enabled=1
 gpgcheck=0
-includepkgs=flex,bison,m4
+includepkgs=flex,bison
 
 [rocky-crb]
 name=Rocky Linux 9 CRB
 baseurl=https://download.rockylinux.org/pub/rocky/9/CRB/x86_64/os/
 enabled=1
 gpgcheck=0
-includepkgs=flex,bison,m4
+includepkgs=flex,bison
 EOF
 
 RUN dnf -y update && \
@@ -33,7 +33,6 @@ RUN dnf -y update && \
         bison \
         xz \
         wget \
-        curl-minimal \
         python3 \
         python3-pip \
         glib2-devel \
