@@ -25,7 +25,6 @@ RUN dnf -y update && \
         cmake \
         gdb \
         git \
-        findutils \
         diffutils \
         file \
         which \
