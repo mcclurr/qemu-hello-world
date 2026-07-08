@@ -9,12 +9,14 @@ name=Rocky Linux 9 AppStream
 baseurl=https://download.rockylinux.org/pub/rocky/9/AppStream/x86_64/os/
 enabled=1
 gpgcheck=0
+includepkgs=flex,bison,m4
 
 [rocky-crb]
 name=Rocky Linux 9 CRB
 baseurl=https://download.rockylinux.org/pub/rocky/9/CRB/x86_64/os/
 enabled=1
 gpgcheck=0
+includepkgs=flex,bison,m4
 EOF
 
 RUN dnf -y update && \
@@ -26,21 +28,15 @@ RUN dnf -y update && \
         gdb \
         git \
         diffutils \
-        file \
-        which \
-        tar \
-        gzip \
         bzip2 \
         flex \
         bison \
         xz \
-        unzip \
         wget \
         curl-minimal \
         python3 \
         python3-pip \
         glib2-devel \
-        zlib-devel \
         ninja-build \
     && dnf clean all
 
