@@ -25,8 +25,6 @@ RUN dnf -y update && \
         cmake \
         gdb \
         git \
-        vim \
-        nano \
         findutils \
         diffutils \
         file \
