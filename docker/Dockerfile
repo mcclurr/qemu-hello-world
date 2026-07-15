@@ -4,6 +4,12 @@ ENV LANG=C.UTF-8
 ENV LC_ALL=C.UTF-8
 
 RUN cat > /etc/yum.repos.d/almalinux.repo <<'EOF'
+[almalinux-baseos]
+name=AlmaLinux 9 BaseOS
+baseurl=https://repo.almalinux.org/almalinux/9/BaseOS/x86_64/os/
+enabled=1
+gpgcheck=0
+
 [almalinux-appstream]
 name=AlmaLinux 9 AppStream
 baseurl=https://repo.almalinux.org/almalinux/9/AppStream/x86_64/os/
@@ -37,6 +43,8 @@ RUN dnf -y update && \
         python3 \
         python3-pip \
         xorriso \
+        grub2-tools-extra \
+        grub2-pc-modules \
         glib2-devel \
         ninja-build \
     && dnf clean all
