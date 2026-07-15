@@ -12,7 +12,7 @@ services:
     command: sleep infinity
 
     volumes:
-      - ./workspace:/workspace
+      - .:/workspace
 
     working_dir: /workspace
 
