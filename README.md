@@ -2,8 +2,8 @@
 
 ## Prerequisites
 
-- Git
-- Docker Desktop (or Docker Engine with Docker Compose)
+* Git
+* Docker Desktop (or Docker Engine with Docker Compose)
 
 > **Windows users:** QEMU uses symbolic links. Before cloning the repository, enable Git symlink support:
 
@@ -25,6 +25,14 @@ Initialize the project's submodules:
 ```bash
 git submodule update --init
 ```
+
+> **Windows users:** Configure the QEMU submodule to use Unix line endings and re-checkout the files:
+>
+> ```bash
+> git -C libs/qemu config core.autocrlf input
+> git -C libs/qemu rm -r --cached .
+> git -C libs/qemu reset --hard
+> ```
 
 > **Note:** This project intentionally initializes only its own submodules. It does **not** recursively initialize nested submodules contained within them.
 
