@@ -1,0 +1,3 @@
+[submodule "libs/qemu"]
+	path = libs/qemu
+	url = https://gitlab.com/qemu-project/qemu.git

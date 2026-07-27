@@ -3,12 +3,8 @@ FROM registry.access.redhat.com/ubi9/ubi:9.4
 ENV LANG=C.UTF-8
 ENV LC_ALL=C.UTF-8
 
-ARG QEMU_VERSION=11.0.2
-
 # ---------------------------------------------------------------------------
 # Package repositories
-#
-# Changing this block invalidates every layer below it.
 # ---------------------------------------------------------------------------
 RUN cat > /etc/yum.repos.d/almalinux.repo <<'EOF'
 [almalinux-baseos]
@@ -34,8 +30,6 @@ EOF
 
 # ---------------------------------------------------------------------------
 # QEMU build dependencies
-#
-# Keep this list stable. Changing anything here causes QEMU to rebuild.
 # ---------------------------------------------------------------------------
 RUN dnf -y install \
         gcc \
@@ -50,38 +44,28 @@ RUN dnf -y install \
         bzip2 \
         python3 \
         python3-pip \
-        wget \
         xz \
     && dnf clean all \
     && rm -rf /var/cache/dnf
-    
+
 # ---------------------------------------------------------------------------
 # Python tools
 # ---------------------------------------------------------------------------
 RUN python3 -m pip install --no-cache-dir tomli
 
 # ---------------------------------------------------------------------------
-# Build QEMU
-#
-# This expensive layer remains cached when packages are added below.
+# Build QEMU from local source
 # ---------------------------------------------------------------------------
-WORKDIR /opt
+WORKDIR /opt/qemu
 
-RUN wget "https://download.qemu.org/qemu-${QEMU_VERSION}.tar.xz" \
-    && tar -xf "qemu-${QEMU_VERSION}.tar.xz" \
-    && cd "qemu-${QEMU_VERSION}" \
-    && ./configure \
+COPY libs/qemu/ ./
+
+RUN ./configure \
     && make -j"$(nproc)" \
-    && make install \
-    && cd /opt \
-    && rm -rf \
-        "qemu-${QEMU_VERSION}" \
-        "qemu-${QEMU_VERSION}.tar.xz"
+    && make install
 
 # ---------------------------------------------------------------------------
 # General development and OS-building tools
-#
-# Adding packages here will not rebuild QEMU.
 # ---------------------------------------------------------------------------
 RUN dnf -y install \
         cmake \
