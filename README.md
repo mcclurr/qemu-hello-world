@@ -5,11 +5,14 @@
 * Git
 * Docker Desktop (or Docker Engine with Docker Compose)
 
-> **Windows users:** QEMU uses symbolic links. Before cloning the repository, enable Git symlink support:
-
-```bash
-git config --global core.symlinks true
-```
+> **Windows users:** QEMU uses symbolic links. Before cloning the repository:
+>
+> 1. Enable **Developer Mode** (**Settings → System → For Developers → Developer Mode**).
+> 2. Enable Git symlink support:
+>
+> ```bash
+> git config --global core.symlinks true
+> ```
 
 ## Clone the Repository
 
