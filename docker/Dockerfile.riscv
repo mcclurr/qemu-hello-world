@@ -1,0 +1,20 @@
+FROM registry.access.redhat.com/ubi9/ubi:9.4
+
+ARG RISCV_TOOLCHAIN_VERSION=15.2.0-1
+
+ENV RISCV_TOOLCHAIN_DIR=/opt/riscv-none-elf
+ENV PATH="${RISCV_TOOLCHAIN_DIR}/bin:${PATH}"
+
+RUN dnf install -y make tar gzip \
+    && dnf clean all \
+    && mkdir -p "${RISCV_TOOLCHAIN_DIR}" \
+    && curl -fsSL \
+        "https://github.com/xpack-dev-tools/riscv-none-elf-gcc-xpack/releases/download/v${RISCV_TOOLCHAIN_VERSION}/xpack-riscv-none-elf-gcc-${RISCV_TOOLCHAIN_VERSION}-linux-x64.tar.gz" \
+        | tar -xz \
+            --strip-components=1 \
+            -C "${RISCV_TOOLCHAIN_DIR}" \
+    && riscv-none-elf-gcc --version
+
+WORKDIR /workspace
+
+CMD ["/bin/bash"]
