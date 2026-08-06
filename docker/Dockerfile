@@ -59,7 +59,7 @@ WORKDIR /opt/qemu
 COPY libs/qemu/ ./
 
 RUN ./configure \
-        --target-list=arm-softmmu \
+        --target-list=arm-softmmu,riscv32-softmmu,riscv64-softmmu \
     && make -j"$(nproc)" \
     && make install \
     && strip /usr/local/bin/qemu-* || true \
@@ -73,12 +73,14 @@ RUN ./configure \
 FROM registry.access.redhat.com/ubi9/ubi:9.4
 
 ARG ARM_TOOLCHAIN_VERSION=15.2.rel1
+ARG RISCV_TOOLCHAIN_VERSION=15.2.0-1
 
 ENV LANG=C.UTF-8
 ENV LC_ALL=C.UTF-8
 
 ENV ARM_TOOLCHAIN_DIR=/opt/arm-none-eabi
-ENV PATH="${ARM_TOOLCHAIN_DIR}/bin:${PATH}"
+ENV RISCV_TOOLCHAIN_DIR=/opt/riscv-none-elf
+ENV PATH="${ARM_TOOLCHAIN_DIR}/bin:${RISCV_TOOLCHAIN_DIR}/bin:${PATH}"
 
 RUN dnf -y install \
         ca-certificates \
@@ -112,6 +114,23 @@ RUN curl --fail --location --retry 3 \
     && rm /tmp/arm-toolchain.tar.xz \
     && arm-none-eabi-gcc --version \
     && qemu-system-arm --version
+
+# ---------------------------------------------------------------------------
+# Generic RISC-V bare-metal toolchain for QEMU
+# ---------------------------------------------------------------------------
+RUN curl --fail --location --retry 3 \
+        --output /tmp/riscv-toolchain.tar.gz \
+        "https://github.com/xpack-dev-tools/riscv-none-elf-gcc-xpack/releases/download/v${RISCV_TOOLCHAIN_VERSION}/xpack-riscv-none-elf-gcc-${RISCV_TOOLCHAIN_VERSION}-linux-x64.tar.gz" \
+    && mkdir -p "${RISCV_TOOLCHAIN_DIR}" \
+    && tar \
+        --extract \
+        --file=/tmp/riscv-toolchain.tar.gz \
+        --directory="${RISCV_TOOLCHAIN_DIR}" \
+        --strip-components=1 \
+    && rm /tmp/riscv-toolchain.tar.gz \
+    && riscv-none-elf-gcc --version \
+    && qemu-system-riscv32 --version \
+    && qemu-system-riscv64 --version
 
 WORKDIR /workspace
 
