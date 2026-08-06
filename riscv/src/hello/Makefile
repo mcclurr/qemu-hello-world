@@ -1,5 +1,7 @@
 CC = riscv-none-elf-gcc
 
+BUILD_DIR = build
+
 CFLAGS = \
 	-march=rv32imac \
 	-mabi=ilp32 \
@@ -12,29 +14,43 @@ CFLAGS = \
 
 LDFLAGS = -T linker.ld
 
-all: hello.elf
+TARGET = $(BUILD_DIR)/hello.elf
 
-hello.elf: startup.S main.c linker.ld
+OBJS = \
+	$(BUILD_DIR)/startup.o \
+	$(BUILD_DIR)/main.o
+
+all: $(TARGET)
+
+$(BUILD_DIR):
+	mkdir -p $(BUILD_DIR)
+
+$(BUILD_DIR)/startup.o: startup.S | $(BUILD_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BUILD_DIR)/main.o: main.c | $(BUILD_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(TARGET): $(OBJS) linker.ld
 	$(CC) $(CFLAGS) $(LDFLAGS) \
-		startup.S \
-		main.c \
+		$(OBJS) \
 		-o $@
 
-run: hello.elf
+run: $(TARGET)
 	qemu-system-riscv32 \
 		-machine virt \
 		-bios none \
-		-kernel hello.elf \
+		-kernel $(TARGET) \
 		-nographic
 
-debug: hello.elf
+debug: $(TARGET)
 	qemu-system-riscv32 \
 		-machine virt \
 		-bios none \
-		-kernel hello.elf \
+		-kernel $(TARGET) \
 		-nographic \
 		-S \
 		-gdb tcp::1234
 
 clean:
-	rm -f hello.elf
+	rm -rf $(BUILD_DIR)

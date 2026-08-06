@@ -4,6 +4,8 @@ CC      := $(CROSS_COMPILE)gcc
 OBJDUMP := $(CROSS_COMPILE)objdump
 SIZE    := $(CROSS_COMPILE)size
 
+BUILD_DIR := build
+
 CPUFLAGS := \
 	-mcpu=cortex-m3 \
 	-mthumb
@@ -24,17 +26,29 @@ LDFLAGS := \
 	-T linker.ld \
 	-nostdlib \
 	-Wl,--gc-sections \
-	-Wl,-Map=hello.map
+	-Wl,-Map=$(BUILD_DIR)/hello.map
 
-SOURCES := startup.S main.c
-TARGET  := hello.elf
+TARGET := $(BUILD_DIR)/hello.elf
+
+OBJS := \
+	$(BUILD_DIR)/startup.o \
+	$(BUILD_DIR)/main.o
 
 .PHONY: all run debug inspect clean
 
 all: $(TARGET)
 
-$(TARGET): $(SOURCES) linker.ld
-	$(CC) $(CFLAGS) $(SOURCES) $(LDFLAGS) -o $@
+$(BUILD_DIR):
+	mkdir -p $(BUILD_DIR)
+
+$(BUILD_DIR)/startup.o: startup.S | $(BUILD_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BUILD_DIR)/main.o: main.c | $(BUILD_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(TARGET): $(OBJS) linker.ld
+	$(CC) $(OBJS) $(LDFLAGS) -o $@
 	$(SIZE) $@
 
 run: $(TARGET)
@@ -55,4 +69,4 @@ inspect: $(TARGET)
 	$(OBJDUMP) -h -d $(TARGET)
 
 clean:
-	rm -f $(TARGET) hello.map
+	rm -rf $(BUILD_DIR)
