@@ -2,6 +2,7 @@
 #include "uart.h"
 #include "boot.h"
 #include "flash.h"
+#include "update.h"
 
 static void print_help(void)
 {
@@ -10,6 +11,7 @@ static void print_help(void)
     uart_puts("  i - application info\r\n");
     uart_puts("  b - boot application\r\n");
     uart_puts("  e - erase application\r\n");
+    uart_puts("  w - write application\r\n");
 }
 
 static void print_info(void)
@@ -86,6 +88,17 @@ void command_loop(void)
                 uart_puts("Application erased.\r\n");
             } else {
                 uart_puts("Flash erase FAILED.\r\n");
+            }
+
+            break;
+
+        case 'w':
+            uart_puts("Waiting for firmware upload...\r\n");
+
+            if (receive_firmware() == 0) {
+                uart_puts("Firmware update successful.\r\n");
+            } else {
+                uart_puts("Firmware update failed.\r\n");
             }
 
             break;

@@ -1,6 +1,9 @@
 #ifndef FLASH_H
 #define FLASH_H
 
-int flash_erase_application(void);
+#include <stdint.h>
 
-#endif
+int flash_erase_application(void);
+int flash_program_word(uint32_t address, uint32_t data);
+
+#endif          

@@ -29,6 +29,8 @@
 #define FLASH_CR_STRT       (1U << 16)
 #define FLASH_CR_LOCK       (1UL << 31)
 
+#define FLASH_CR_PG         (1U << 0)
+
 #define FLASH_ERROR_MASK \
     (FLASH_SR_OPERR  | \
      FLASH_SR_WRPERR | \
@@ -65,6 +67,46 @@ static void flash_clear_status(void)
     FLASH_SR =
         FLASH_SR_EOP |
         FLASH_ERROR_MASK;
+}
+
+int flash_program_word(uint32_t address, uint32_t data)
+{
+    if (address < 0x08008000UL || address >= 0x08080000UL) {
+        return -1;
+    }
+
+    if ((address & 0x3U) != 0U) {
+        return -1;
+    }
+
+    flash_unlock();
+    flash_wait();
+    flash_clear_status();
+
+    FLASH_CR &= ~FLASH_CR_PSIZE_MASK;
+    FLASH_CR |= FLASH_CR_PSIZE_X32;
+
+    FLASH_CR |= FLASH_CR_PG;
+
+    *(volatile uint32_t *)address = data;
+
+    flash_wait();
+
+    FLASH_CR &= ~FLASH_CR_PG;
+
+    if (FLASH_SR & FLASH_ERROR_MASK) {
+        flash_lock();
+        return -1;
+    }
+
+    if (*(volatile uint32_t *)address != data) {
+        flash_lock();
+        return -1;
+    }
+
+    flash_lock();
+
+    return 0;
 }
 
 static int flash_erase_sector(uint32_t sector)

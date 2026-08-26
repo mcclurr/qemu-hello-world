@@ -54,6 +54,18 @@ void uart_init(void)
     USART2_CR1 |= (1U << 13);
 }
 
+uint32_t uart_get_u32(void)
+{
+    uint32_t value = 0;
+
+    value |= (uint32_t)(uint8_t)uart_getchar() << 0;
+    value |= (uint32_t)(uint8_t)uart_getchar() << 8;
+    value |= (uint32_t)(uint8_t)uart_getchar() << 16;
+    value |= (uint32_t)(uint8_t)uart_getchar() << 24;
+
+    return value;
+}
+
 void uart_puthex32(uint32_t value)
 {
     static const char hex[] = "0123456789ABCDEF";

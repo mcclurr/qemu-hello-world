@@ -6,6 +6,8 @@ SIZE    := $(CROSS_COMPILE)size
 
 BUILD_DIR := build
 
+BIN := $(BUILD_DIR)/application.bin
+
 CPUFLAGS := -mcpu=cortex-m4 -mthumb
 
 INCLUDES := -I. -I../common/include
@@ -33,7 +35,8 @@ OBJS := \
     $(BUILD_DIR)/boot.o \
     $(BUILD_DIR)/commands.o \
     $(BUILD_DIR)/uart.o \
-    $(BUILD_DIR)/flash.o
+    $(BUILD_DIR)/flash.o \
+    $(BUILD_DIR)/update.o
 
 .PHONY: all inspect clean
 
@@ -58,6 +61,9 @@ $(BUILD_DIR)/commands.o: commands.c commands.h boot.h flash.h ../common/include/
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(BUILD_DIR)/flash.o: flash.c flash.h | $(BUILD_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BUILD_DIR)/update.o: update.c update.h | $(BUILD_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(TARGET): $(OBJS) linker.ld
