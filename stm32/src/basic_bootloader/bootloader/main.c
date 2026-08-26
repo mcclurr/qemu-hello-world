@@ -21,6 +21,10 @@ int main(void)
         command_loop();
     }
 
-    uart_puts("Booting application...\r\n");
-    jump_to_application();
+    if (boot_application_is_valid()) {
+        uart_puts("Booting application...\r\n");
+        jump_to_application();
+    } else {
+        uart_puts("Application invalid. Refusing to boot.\r\n");
+    }
 }
