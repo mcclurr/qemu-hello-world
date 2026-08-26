@@ -54,6 +54,17 @@ void uart_init(void)
     USART2_CR1 |= (1U << 13);
 }
 
+void uart_puthex32(uint32_t value)
+{
+    static const char hex[] = "0123456789ABCDEF";
+
+    uart_puts("0x");
+
+    for (int shift = 28; shift >= 0; shift -= 4) {
+        uint32_t digit = (value >> shift) & 0xFU;
+        uart_putchar(hex[digit]);
+    }
+}
 
 void uart_putchar(char c)
 {

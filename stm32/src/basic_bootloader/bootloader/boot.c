@@ -24,7 +24,7 @@ int boot_application_is_valid(void)
     uint32_t app_stack = boot_get_app_stack();
     uint32_t app_reset = boot_get_app_reset();
 
-    if (app_stack < RAM_START || app_stack >= RAM_END) {
+    if (app_stack < RAM_START || app_stack > RAM_END) {
         return 0;
     }
 

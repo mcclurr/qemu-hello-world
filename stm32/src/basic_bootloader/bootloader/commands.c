@@ -12,7 +12,25 @@ static void print_help(void)
 
 static void print_info(void)
 {
-    uart_puts("\r\nApplication address: 0x08008000\r\n");
+    uint32_t app_stack = boot_get_app_stack();
+    uint32_t app_reset = boot_get_app_reset();
+
+    uart_puts("\r\nApplication address: ");
+    uart_puthex32(APP_ADDR);
+
+    uart_puts("\r\nInitial MSP:         ");
+    uart_puthex32(app_stack);
+
+    uart_puts("\r\nReset handler:       ");
+    uart_puthex32(app_reset);
+
+    uart_puts("\r\nApplication valid:   ");
+
+    if (boot_application_is_valid()) {
+        uart_puts("YES\r\n");
+    } else {
+        uart_puts("NO\r\n");
+    }
 }
 
 void command_loop(void)
