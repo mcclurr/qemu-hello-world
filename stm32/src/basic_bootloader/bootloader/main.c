@@ -1,6 +1,6 @@
 #include "uart.h"
 #include "boot.h"
-
+#include "commands.h"
 
 int main(void)
 {
@@ -18,16 +18,9 @@ int main(void)
     uart_puts("\r\n");
 
     if (command == 'b') {
-
-        uart_puts("Entered bootloader mode!\r\n");
-
-        while (1) {
-        }
-
-    } else {
-
-        uart_puts("Booting application...\r\n");
-
-        jump_to_application();
+        command_loop();
     }
+
+    uart_puts("Booting application...\r\n");
+    jump_to_application();
 }
