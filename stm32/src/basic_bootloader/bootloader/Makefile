@@ -32,7 +32,8 @@ OBJS := \
     $(BUILD_DIR)/main.o \
     $(BUILD_DIR)/boot.o \
     $(BUILD_DIR)/commands.o \
-    $(BUILD_DIR)/uart.o
+    $(BUILD_DIR)/uart.o \
+    $(BUILD_DIR)/flash.o
 
 .PHONY: all inspect clean
 
@@ -53,7 +54,10 @@ $(BUILD_DIR)/boot.o: boot.c boot.h | $(BUILD_DIR)
 $(BUILD_DIR)/uart.o: ../common/src/uart.c ../common/include/uart.h | $(BUILD_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(BUILD_DIR)/commands.o: commands.c commands.h boot.h ../common/include/uart.h | $(BUILD_DIR)
+$(BUILD_DIR)/commands.o: commands.c commands.h boot.h flash.h ../common/include/uart.h | $(BUILD_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BUILD_DIR)/flash.o: flash.c flash.h | $(BUILD_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(TARGET): $(OBJS) linker.ld
