@@ -1,3 +1,6 @@
 [submodule "libs/qemu"]
 	path = libs/qemu
 	url = https://gitlab.com/qemu-project/qemu.git
+[submodule "libs/u-boot"]
+	path = libs/u-boot
+	url = https://source.denx.de/u-boot/u-boot.git
