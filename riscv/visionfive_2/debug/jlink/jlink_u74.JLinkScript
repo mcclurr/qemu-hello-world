@@ -1,0 +1,16 @@
+int InitTarget(void) {
+    // TDI -> TAP_#1 -> TAP_#0 -> TDO
+    // Select TAP #1 = U74-MC
+
+    JLINK_JTAG_DRPre  = 1;
+    JLINK_JTAG_DRPost = 0;
+    JLINK_JTAG_IRPre  = 5;
+    JLINK_JTAG_IRPost = 0;
+    JLINK_JTAG_IRLen  = 5;
+
+    JLINK_SetDevice("U74-MC");
+
+    JLINK_ExecCommand("RISCV_SetHartSel = 1");
+
+    return 0;
+}
