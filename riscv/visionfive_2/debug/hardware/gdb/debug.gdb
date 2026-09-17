@@ -6,13 +6,11 @@ target extended-remote 172.20.240.1:3334
 # Load hello.elf into RAM
 load
 
-# Work with hart 1
-thread 1
+# Catch OpenSBI handing control to our application
+break _start
 
-# Start hart 1 at our application's entry point
-set $pc = _start
+# Catch hart 2 when OpenSBI HSM starts it
+break _secondary_start
 
-# Break when we enter main
-break main
-
+# Let OpenSBI initialize and hand off to the application
 continue
