@@ -4,6 +4,10 @@ set remotetimeout 240
 # Connect to QEMU's built-in GDB server
 target extended-remote :1234
 
+printf "Elf Path received: %s\n", $elf_path
+
+eval "file %s", $elf_path
+
 # Catch OpenSBI handing control to our application
 break _start
 
